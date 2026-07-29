@@ -1,0 +1,33 @@
+name: Build Android App
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v4
+
+    - name: Unzip Project
+      run: unzip digital-sales-bot.zip
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Build APK
+      run: |
+        find . -name "gradlew" -execdir chmod +x {} \;
+        find . -name "gradlew" -execdir ./gradlew assembleDebug \;
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: Digital-Sales-Bot-APK
+        path: "**/*.apk"
